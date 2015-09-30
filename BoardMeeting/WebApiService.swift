@@ -7,14 +7,14 @@ struct WebApiService {
     private enum ResourcePath: Printable {
         case Login
         case Verify
-        
+        case GetDirectory
         
         
         var description: String {
             switch self {
                 case .Login: return "/Api/Login"
                 case .Verify: return "/Api/Verify"
-                
+                case .GetDirectory: return "/Api/GetDirectory"
             }
         }
     }
@@ -124,5 +124,48 @@ struct WebApiService {
         }
         
     }
+    
+    static func getDirectory(response: (object: FolderModel?) -> ()) {
+        
+        let baseURL = LocalStore.accessDomain()!
+        
+        let urlString = baseURL + ResourcePath.GetDirectory.description
+        
+        
+        let parameters = [
+                "Password": LocalStore.accessToken()!
+        ]
+        
+        Alamofire.request(.POST, urlString, parameters: parameters, encoding: .JSON).responseJSON { (_, _, json, _) in
+            
+            if(json == nil ){
+                response(object: nil)
+            }
+            else
+            {
+                
+                let jsonObject = JSON(json!)
+                
+                //println(jsonObject)
+                
+                let IsSuccess = jsonObject["IsSuccess"].bool
+                
+                if(IsSuccess?.boolValue == true)
+                {
+                    if let Item = jsonObject["Item"].dictionaryObject {
+                        
+                        let Return = JSONParser.parseDirectory(Item as NSDictionary)
+
+                        response (object : Return)
+                    }
+                }
+                else
+                {
+                    response(object: nil)
+                }
+            }
+        }
+    }
+
 
 }

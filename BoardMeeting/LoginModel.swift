@@ -10,6 +10,7 @@ class LoginModel : Serializable  {
     var LastName: String
     var Email: String
     var Description : String
+    var Password : String
     
     override init() {
         UserId = 0
@@ -19,6 +20,7 @@ class LoginModel : Serializable  {
         LastName = ""
         Email = ""
         Description = ""
+        Password = ""
     }
 }
 
