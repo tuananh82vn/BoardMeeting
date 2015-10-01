@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import Alamofire
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
+    @IBOutlet weak var progressView: ProgressView!
+    
     @IBOutlet weak var tableView1: UITableView!
 
     var files : [String] = []
@@ -36,7 +39,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     var path  : String = NSTemporaryDirectory().stringByAppendingPathComponent("Board Meeting Files")
 
-    
+    var numberOfFileDownloaded = 0
     
     var fileManager = NSFileManager()
     
@@ -46,26 +49,36 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.navigationController?.navigationBarHidden = false
         
+        addGradientBackgroundLayer()
+        
+        self.progressView.hidden = true
+        
         
         //hide back button
         if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
         {
             self.navigationItem.hidesBackButton = true
             
-            syncFolder()
+            //syncFolder()
+            
+            
         }
         else
         {
             self.navigationItem.hidesBackButton = false
             
-            initData()
+            
         }
+        
+        initData()
 
     }
     
     func initData(){
         
         var error : NSError?
+        
+        fileManager = NSFileManager()
         
         self.files = fileManager.contentsOfDirectoryAtPath(path, error: &error) as! [String]
         
@@ -77,7 +90,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             {
                files.removeAtIndex(index1)
             }
-            
             index1++
         }
         
@@ -88,6 +100,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     func reset(){
+        
+        numberOfFileDownloaded = 0
         
         remoteFoler = FolderModel()
         
@@ -103,6 +117,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func syncFolder(){
         
         self.view.showLoading()
+        
+        //tableView1.hidden = true
         
         self.reset()
         
@@ -133,15 +149,19 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if(self.updateFileList.count > 0 ){
                     self.downloadFiles()
                 }
+                else
+                {
+                    self.view.hideLoading()
+                    //self.tableView1.hidden = false
+                    self.initData()
+                }
                 
-                self.initData()
-                
-                self.view.hideLoading()
-            }
-            else
-            {
 
             }
+//            else
+//            {
+//
+//            }
         }
     }
     
@@ -278,7 +298,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     //If file not found in Local
                     if(!foundFile)
                     {
-                        println("Need to delete :" + localFile.FilePath)
+                        //println("Need to delete :" + localFile.FilePath)
                         self.folderManager.DeleteFilesInFolder(rootPath.stringByAppendingPathComponent(localFile.FilePath))
                     }
                 }
@@ -326,10 +346,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         //Download new files
         for localFile in self.updateFileList{
-            
-            WebApiService.getFile(localFile.FilePath+"\\"+localFile.FileName, filePathReturn: rootPath.stringByAppendingPathComponent(localFile.LocalFilePath))
+                getFile(localFile.FilePath+"\\"+localFile.FileName, filePathReturn: rootPath.stringByAppendingPathComponent(localFile.LocalFilePath))
         }
-        
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -409,7 +428,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             mainviewController.path = path
             
             self.navigationController!.pushViewController(mainviewController, animated: true)
-
         }
         else
         {
@@ -427,6 +445,91 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBAction func ButtonRefeshClicked(sender: AnyObject) {
         self.syncFolder()
     }
+    
+    func getFile(filePath : String , filePathReturn : String){
+        
+        //println(filePathReturn)
+        
+        let baseURL = LocalStore.accessDomain()!
+        
+        let urlString = baseURL + "/Api/GetFile/?filePath=" + filePath
+        
+        var urlStr : NSString = urlString.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+        
+        //var remoteUrl : NSURL? = NSURL(string: urlStr as String)
+        
+        let destination: (NSURL, NSHTTPURLResponse) -> (NSURL) = {
+            (temporaryURL, response) in
+            
+            
+            if let directoryURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0] as? NSURL {
+                
+                var localImageURL = NSURL(fileURLWithPath: filePathReturn)
+                
+                return localImageURL!
+            }
+            
+            return temporaryURL
+        }
+        
+        self.progressView.hidden = false
+        
+        Alamofire.download(.GET, urlStr.description, destination)
+            .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
+                
+                //println("bytesRead : ", bytesRead)
+                //println("totalBytesRead : ", totalBytesRead)
+                //println("totalBytesExpectedToRead : ", totalBytesExpectedToRead)
+                
+                //This closure is NOT called on the main queue for performance
+                //reasons. To update your ui, dispatch to the main queue.
+                dispatch_async(dispatch_get_main_queue()) {
+                    
+                    let progress = Float(totalBytesRead) / Float(totalBytesExpectedToRead)
+                    self.progressView.animateProgressViewToProgress(progress)
+                    self.progressView.updateProgressViewLabelWithProgress(progress * 100)
+                    self.progressView.updateProgressViewWith(Float(totalBytesRead), totalFileSize: Float(totalBytesExpectedToRead))
+
+                    if totalBytesRead == totalBytesExpectedToRead {
+                        
+                        self.progressView.hidden = true
+                        
+                        self.numberOfFileDownloaded = self.numberOfFileDownloaded + 1
+                        
+                    }
+                    //print("Total bytes read on main queue: \(totalBytesRead)")
+                }
+            }
+            .response { response in
+                
+                //Da download xong
+                if(self.numberOfFileDownloaded == self.updateFileList.count)
+                {
+                    //self.view.hideLoading()
+                    
+                    //self.tableView1.hidden = false
+                    println("Da download xong")
+                    
+                    self.view.hideLoading()
+                    
+                    self.initData()
+                }
+            }
+        
+    }
+    
+    func addGradientBackgroundLayer() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.frame
+        
+        let colorTop: AnyObject = UIColor(red: 73.0/255.0, green: 223.0/255.0, blue: 185.0/255.0, alpha: 1.0).CGColor
+        let colorBottom: AnyObject = UIColor(red: 36.0/255.0, green: 115.0/255.0, blue: 192.0/255.0, alpha: 1.0).CGColor
+        gradientLayer.colors = [colorTop, colorBottom]
+        
+        gradientLayer.locations = [0.0, 1.0]
+        view.layer.insertSublayer(gradientLayer, atIndex: 0)
+    }
+
     
 
 }

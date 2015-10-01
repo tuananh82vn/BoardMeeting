@@ -170,9 +170,9 @@ struct WebApiService {
         }
     }
     
-    static func getFile(filePath : String , filePathReturn : String) {
+    static func getFile(filePath : String , filePathReturn : String){
         
-        println(filePathReturn)
+        //println(filePathReturn)
         
         let baseURL = LocalStore.accessDomain()!
         
@@ -207,8 +207,11 @@ struct WebApiService {
                 // This closure is NOT called on the main queue for performance
                 // reasons. To update your ui, dispatch to the main queue.
                 dispatch_async(dispatch_get_main_queue()) {
+                    
+                    
                     //print("Total bytes read on main queue: \(totalBytesRead)")
                 }
             }
+
     }
 }

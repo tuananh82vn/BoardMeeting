@@ -158,32 +158,50 @@
                                     <outlet property="delegate" destination="kzQ-c6-4pr" id="WsX-fI-VPO"/>
                                 </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="As3-Gi-B4F" customClass="ProgressView" customModule="BoardMeeting" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.47983151359999998" green="0.71845206100000003" blue="0.99796796089999995" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="tintColor" red="0.99867031989999999" green="1" blue="0.92498745689999995" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="GcA-8t-AHr" firstAttribute="top" secondItem="As3-Gi-B4F" secondAttribute="bottom" constant="378" id="6iV-SH-8Vi"/>
                             <constraint firstItem="IjY-JP-Itl" firstAttribute="top" secondItem="LIq-S9-SN3" secondAttribute="bottom" id="G9h-Ps-YG5"/>
                             <constraint firstItem="IjY-JP-Itl" firstAttribute="leading" secondItem="GnP-hz-vEM" secondAttribute="leading" id="H8z-Gk-R8b"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="As3-Gi-B4F" secondAttribute="trailing" constant="39" id="bG6-ek-vad"/>
                             <constraint firstItem="IjY-JP-Itl" firstAttribute="bottom" secondItem="GcA-8t-AHr" secondAttribute="top" id="kLu-ui-pcY"/>
+                            <constraint firstItem="As3-Gi-B4F" firstAttribute="top" secondItem="LIq-S9-SN3" secondAttribute="bottom" constant="8" symbolic="YES" id="z7S-PX-9Ir"/>
+                            <constraint firstItem="As3-Gi-B4F" firstAttribute="leading" secondItem="IjY-JP-Itl" secondAttribute="trailing" constant="59" id="zlj-7N-Ysf"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="IjY-JP-Itl"/>
+                                <exclude reference="As3-Gi-B4F"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="G9h-Ps-YG5"/>
                                 <exclude reference="H8z-Gk-R8b"/>
                                 <exclude reference="kLu-ui-pcY"/>
+                                <exclude reference="bG6-ek-vad"/>
+                                <exclude reference="z7S-PX-9Ir"/>
+                                <exclude reference="zlj-7N-Ysf"/>
+                                <exclude reference="6iV-SH-8Vi"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="subviews">
                                 <include reference="IjY-JP-Itl"/>
+                                <include reference="As3-Gi-B4F"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="G9h-Ps-YG5"/>
                                 <include reference="H8z-Gk-R8b"/>
                                 <include reference="kLu-ui-pcY"/>
+                                <include reference="bG6-ek-vad"/>
+                                <include reference="z7S-PX-9Ir"/>
+                                <include reference="zlj-7N-Ysf"/>
+                                <include reference="6iV-SH-8Vi"/>
                             </mask>
                         </variation>
                     </view>
@@ -197,6 +215,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="progressView" destination="As3-Gi-B4F" id="Bqs-P9-xY7"/>
                         <outlet property="tableView1" destination="IjY-JP-Itl" id="8Nw-4X-wi6"/>
                     </connections>
                 </viewController>

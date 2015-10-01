@@ -33,6 +33,8 @@
 		6689BC1A1BBA1C68004E569E /* JSSAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6689BC191BBA1C68004E569E /* JSSAlertView.swift */; };
 		6689BC311BBA1F15004E569E /* Spring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6689BC271BBA1D53004E569E /* Spring.framework */; };
 		6689BC321BBA1F15004E569E /* Spring.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6689BC271BBA1D53004E569E /* Spring.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		66ABAEDB1BBD0D5100DBE3FB /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ABAEDA1BBD0D5100DBE3FB /* ProgressView.swift */; };
+		66ABAEDD1BBD0D5800DBE3FB /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,6 +163,8 @@
 		6689BC171BBA1AC7004E569E /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		6689BC191BBA1C68004E569E /* JSSAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSSAlertView.swift; sourceTree = "<group>"; };
 		6689BC1B1BBA1D53004E569E /* SpringApp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SpringApp.xcodeproj; path = Spring/SpringApp.xcodeproj; sourceTree = "<group>"; };
+		66ABAEDA1BBD0D5100DBE3FB /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,6 +303,8 @@
 		6689BBC01BBA120C004E569E /* UI Controls */ = {
 			isa = PBXGroup;
 			children = (
+				66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */,
+				66ABAEDA1BBD0D5100DBE3FB /* ProgressView.swift */,
 				6689BC191BBA1C68004E569E /* JSSAlertView.swift */,
 			);
 			name = "UI Controls";
@@ -547,6 +553,7 @@
 				6689BC081BBA18FF004E569E /* Serializable.swift in Sources */,
 				6689BC0C1BBA194F004E569E /* WebApiService.swift in Sources */,
 				660A5B8F1BBA4D5B00F1F06D /* MainViewController.swift in Sources */,
+				66ABAEDD1BBD0D5800DBE3FB /* DownloadButton.swift in Sources */,
 				6689BC141BBA1A78004E569E /* LocalStore.swift in Sources */,
 				6689BC031BBA1780004E569E /* LoginModel.swift in Sources */,
 				6689BC0A1BBA1925004E569E /* SwiftyJSON.swift in Sources */,
@@ -560,6 +567,7 @@
 				6689BC161BBA1AAD004E569E /* Error.swift in Sources */,
 				6689BB921BBA0E9E004E569E /* AppDelegate.swift in Sources */,
 				660A5B931BBA50F800F1F06D /* Folder.swift in Sources */,
+				66ABAEDB1BBD0D5100DBE3FB /* ProgressView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
