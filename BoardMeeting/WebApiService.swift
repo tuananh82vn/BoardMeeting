@@ -8,6 +8,7 @@ struct WebApiService {
         case Login
         case Verify
         case GetDirectory
+        case GetFile
         
         
         var description: String {
@@ -15,6 +16,8 @@ struct WebApiService {
                 case .Login: return "/Api/Login"
                 case .Verify: return "/Api/Verify"
                 case .GetDirectory: return "/Api/GetDirectory"
+                case .GetFile: return "/Api/GetFile/?filePath="
+
             }
         }
     }
@@ -65,7 +68,7 @@ struct WebApiService {
             
                 let jsonObject = JSON(json!)
                 
-                println(jsonObject)
+                //println(jsonObject)
 
                 let IsSuccess = jsonObject["IsSuccess"].bool
             
@@ -166,6 +169,46 @@ struct WebApiService {
             }
         }
     }
+    
+    static func getFile(filePath : String , filePathReturn : String) {
+        
+        println(filePathReturn)
+        
+        let baseURL = LocalStore.accessDomain()!
+        
+        let urlString = baseURL + ResourcePath.GetFile.description + filePath
+        
+        var urlStr : NSString = urlString.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+        
+        //var remoteUrl : NSURL? = NSURL(string: urlStr as String)
+        
+        let destination: (NSURL, NSHTTPURLResponse) -> (NSURL) = {
+            (temporaryURL, response) in
+            
+            
+            if let directoryURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0] as? NSURL {
+                
+                var localImageURL = NSURL(fileURLWithPath: filePathReturn)
+                
+                return localImageURL!
+            }
 
+            return temporaryURL
+        }
 
+        Alamofire.download(.GET, urlStr.description, destination)
+            .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
+                
+                
+                //println("bytesRead : ", bytesRead)
+                //println("totalBytesRead : ", totalBytesRead)
+                //println("totalBytesExpectedToRead : ", totalBytesExpectedToRead)
+                
+                // This closure is NOT called on the main queue for performance
+                // reasons. To update your ui, dispatch to the main queue.
+                dispatch_async(dispatch_get_main_queue()) {
+                    //print("Total bytes read on main queue: \(totalBytesRead)")
+                }
+            }
+    }
 }

@@ -31,14 +31,16 @@ public class FolderManager {
         
         let fileManager = NSFileManager()
         
-        if fileManager.createDirectoryAtPath(folderPath, withIntermediateDirectories: true, attributes: nil, error: nil)
+        let errorPointer = NSErrorPointer()
+        
+        if fileManager.createDirectoryAtPath(folderPath, withIntermediateDirectories: true, attributes: nil, error: errorPointer)
         {
-            //println("Folder Created")
+           // println("Folder Created ",folderPath)
             return true
         }
         else
         {
-            //println("Could not create the directory")
+            println("Could not create the directory " , folderPath)
             return false
         }
     }

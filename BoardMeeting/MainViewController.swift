@@ -11,8 +11,6 @@ import UIKit
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
     @IBOutlet weak var tableView1: UITableView!
-    
-    var path  : String = NSTemporaryDirectory().stringByAppendingPathComponent("Board Meeting Files")
 
     var files : [String] = []
     
@@ -28,14 +26,19 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var folderManager = FolderManager()
     
-    var BMAFolderPath : String = ""
-    
-    var rootPath : String = ""
-    
-    let RootFolderName = "Board Meeting Files"
-
     var localFolderList = [FolderModel]()
     
+    var BMAFolderPath : String = ""
+    
+    let RootFolderName = "Board Meeting Files"
+    
+    var rootPath : String = NSTemporaryDirectory()
+
+    var path  : String = NSTemporaryDirectory().stringByAppendingPathComponent("Board Meeting Files")
+
+    
+    
+    var fileManager = NSFileManager()
     
     override func viewDidLoad() {
         
@@ -43,45 +46,81 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.navigationController?.navigationBarHidden = false
         
-        if(path == NSTemporaryDirectory().stringByAppendingPathComponent("Board Meeting Files"))
+        
+        //hide back button
+        if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
         {
             self.navigationItem.hidesBackButton = true
+            
+            syncFolder()
         }
         else
         {
             self.navigationItem.hidesBackButton = false
+            
+            initData()
         }
-        
-        let fileManager = NSFileManager()
-        
-        initData()
+
+    }
+    
+    func initData(){
         
         var error : NSError?
         
-        files = fileManager.contentsOfDirectoryAtPath(path, error: &error) as! [String]
+        self.files = fileManager.contentsOfDirectoryAtPath(path, error: &error) as! [String]
         
         var index1 = 0
         
         for file in files {
             
-            if(file == ".DS_Store"){
-                files.removeAtIndex(index1)
+            if (file == ".DS_Store")
+            {
+               files.removeAtIndex(index1)
             }
             
             index1++
         }
         
+        self.tableView1.reloadData()
+        
         self.title = path.lastPathComponent
-        
-        
     }
     
-    func initData(){
+    
+    func reset(){
+        
+        remoteFoler = FolderModel()
+        
+        remoteFolderList.removeAll(keepCapacity: false)
+        
+        updateFileList.removeAll(keepCapacity: false)
+        
+        localFolder = FolderModel()
+        
+        localFolderList.removeAll(keepCapacity: false)
+    }
+    
+    func syncFolder(){
+        
+        self.view.showLoading()
+        
+        self.reset()
+        
+        //Get Local Folder Structure
+        self.localFolder = FolderModel()
+        
+        self.localFolder.FolderName = RootFolderName
+        
+        BMAFolderPath = rootPath.stringByAppendingPathComponent(RootFolderName)
+        
+        self.localFolder = self.getLocalFolder(BMAFolderPath, folder : self.localFolder, parentFolder : self.localFolder.FolderName)
+        
+        self.SortFolder2(self.localFolder)
+        
         
         //Get Remote Folder Structure
         WebApiService.getDirectory() { object in
             
-            self.view.hideLoading()
             
             if let temp = object {
                 
@@ -91,14 +130,17 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 self.compareFolder()
                 
+                if(self.updateFileList.count > 0 ){
+                    self.downloadFiles()
+                }
+                
+                self.initData()
+                
+                self.view.hideLoading()
             }
             else
             {
-//                JSSAlertView().danger(
-//                    self,
-//                    title: "Error",
-//                    text: "Incorrect username or password"
-//                )
+
             }
         }
     }
@@ -112,6 +154,60 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.SortFolder1(childfolder)
             }
         }
+    }
+    
+    func SortFolder2 (folder: FolderModel) -> Void {
+        
+        self.localFolderList.append(folder)
+        
+        if(folder.childFolders.count > 0 ){
+            for childfolder in folder.childFolders {
+                self.SortFolder2(childfolder)
+            }
+        }
+    }
+    
+    func getLocalFolder(path : String, folder : FolderModel, parentFolder : String) ->FolderModel {
+        
+        let (folderNames, errorOpt) = self.folderManager.GetListOfFolder(path)
+        
+        if(errorOpt == nil)
+        {
+            if let folderList = folderNames {
+                for folderName in folderList {
+                    
+                    
+                    let pathFolder = path.stringByAppendingPathComponent(folderName)
+                    
+                    if(self.folderManager.IsDirectory(pathFolder))
+                    {
+                        var childFolder = FolderModel()
+                        
+                        childFolder.FolderName = parentFolder.stringByAppendingPathComponent(folderName)
+                        
+                        childFolder = self.getLocalFolder(pathFolder, folder: childFolder, parentFolder : childFolder.FolderName)
+                        
+                        folder.childFolders.append(childFolder)
+                        
+                    }
+                    else
+                    {
+                        if(folderName != ".DS_Store") {
+                            var childFile = FileModel()
+                            childFile.FileName = folderName
+                            childFile.FileSize = pathFolder.fileSize
+                            childFile.FileDate = pathFolder.fileModificationDate
+                            childFile.FilePath = folder.FolderName.stringByAppendingPathComponent(childFile.FileName)
+                            
+                            folder.childFiles.append(childFile)
+                        }
+                    }
+                }
+            }
+        }
+        
+        return folder
+        
     }
     
     func compareFolder() -> Void{
@@ -142,7 +238,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     for localFile in foundLocalFolder.childFiles
                     {
-                        if(localFile.FileName == remoteFile.FileName && localFile.FileSize ==  remoteFile.FileSize && localFile.FileDate == remoteFile.FileDate)
+                        if(localFile.FileName == remoteFile.FileName && localFile.FileSize ==  remoteFile.FileSize)
                         {
                             //found File
                             foundFile = true
@@ -163,7 +259,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     for remoteFile in remoteFolder.childFiles
                     {
-                        if(localFile.FileName == remoteFile.FileName && localFile.FileSize ==  remoteFile.FileSize && localFile.FileDate == remoteFile.FileDate)
+                        
+//                        println("localFile.FileName : \(localFile.FileName)")
+//                        println("localFile.FileSize : \(localFile.FileSize)")
+//                        println("localFile.FileDate : \(localFile.FileDate)")
+//                        
+//                        println("remoteFile.FileName : \(remoteFile.FileName)")
+//                        println("remoteFile.FileSize : \(remoteFile.FileSize)")
+//                        println("remoteFile.FileDate : \(remoteFile.FileDate)")
+                        
+                        if(localFile.FileName == remoteFile.FileName && localFile.FileSize ==  remoteFile.FileSize)
                         {
                             //found File
                             foundFile = true
@@ -173,7 +278,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     //If file not found in Local
                     if(!foundFile)
                     {
-                        //println("Need to delete :" + localFile.FilePath)
+                        println("Need to delete :" + localFile.FilePath)
                         self.folderManager.DeleteFilesInFolder(rootPath.stringByAppendingPathComponent(localFile.FilePath))
                     }
                 }
@@ -184,8 +289,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             {
                 // Create it
                 self.folderManager.CreateFolder(rootPath.stringByAppendingPathComponent(remoteFolderName))
-                // Copy Files if Needed
                 
+                // Copy All Files in this folder
+                for remoteFile in remoteFolder.childFiles {
+                        self.updateFileList.append(remoteFile)
+                }
             }
         }
         
@@ -212,6 +320,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.folderManager.DeleteFolder(rootPath.stringByAppendingPathComponent(localFolderName))
             }
         }
+    }
+    
+    func downloadFiles(){
+        
+        //Download new files
+        for localFile in self.updateFileList{
+            
+            WebApiService.getFile(localFile.FilePath+"\\"+localFile.FileName, filePathReturn: rootPath.stringByAppendingPathComponent(localFile.LocalFilePath))
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -306,6 +424,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
 
+    @IBAction func ButtonRefeshClicked(sender: AnyObject) {
+        self.syncFolder()
+    }
     
 
 }
