@@ -10,13 +10,13 @@ import UIKit
 import Spring
 
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController , UITextFieldDelegate {
 
-    @IBOutlet weak var tft_Password: UITextField!
-    @IBOutlet weak var tft_Username: UITextField!
+    @IBOutlet weak var password_img: SpringImageView!
+    @IBOutlet weak var email_img: SpringImageView!
     
-//    var localFolder = FolderModel()
-//    
+    @IBOutlet weak var tft_Password: DesignableTextField!
+    @IBOutlet weak var tft_Username: DesignableTextField!
     
     var folderManager = FolderManager()
     
@@ -26,18 +26,12 @@ class LoginViewController: UIViewController {
     
     let RootFolderName = "Board Meeting Files"
     
-//    var remoteFolderList = [FolderModel]()
-//    
-//    var localFolderList = [FolderModel]()
-//    
-//    var updateFileList = [FileModel]()
     
+    @IBOutlet weak var heightConstraint : NSLayoutConstraint!
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
-        
         
         self.navigationController?.navigationBarHidden = true
         
@@ -60,9 +54,58 @@ class LoginViewController: UIViewController {
             folderManager.CreateFolder(BMAFolderPath)
 
         }
+        
+        tft_Password.delegate = self
+        tft_Username.delegate = self
+        
+        //
+        
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
+        
+        //rotated()
 
     }
     
+    
+    //handle when device rotate
+    func rotated(){
+        
+        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        {
+            self.heightConstraint.constant = 70
+        }
+        
+        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        {
+            self.heightConstraint.constant = 250
+        }
+        
+        self.view.layoutIfNeeded()
+        
+    }
+
+    func textFieldDidBeginEditing(textField: UITextField) {
+        if textField == tft_Username {
+            email_img.image = UIImage(named: "email_selected")
+            email_img.animate()
+        }
+        else {
+            email_img.image = UIImage(named: "email_normal")
+        }
+        
+        if textField == tft_Password {
+            password_img.image = UIImage(named: "password_selected")
+            password_img.animate()
+        }
+        else {
+            password_img.image = UIImage(named: "password_normal")
+        }
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        email_img.image = UIImage(named: "email_normal")
+        password_img.image = UIImage(named: "password_normal")
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

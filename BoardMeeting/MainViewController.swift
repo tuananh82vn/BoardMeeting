@@ -8,10 +8,14 @@
 
 import UIKit
 import Alamofire
+import Spring
 
-class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, UIScrollViewDelegate{
 
-    @IBOutlet weak var progressView: ProgressView!
+    @IBOutlet weak var progressVIew1: UIProgressView!
+    
+    
+    @IBOutlet weak var expandButton: SpringButton!
     
     @IBOutlet weak var tableView1: UITableView!
 
@@ -43,25 +47,51 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var fileManager = NSFileManager()
     
+    @IBOutlet weak var progressLabel: UILabel!
+    
+    @IBOutlet weak var webView: UIWebView!
+    
+    var isExpand : Bool = false
+    
+    let image_expand = UIImage(named: "expand") as UIImage?
+    
+    let image_collapse = UIImage(named: "collapse") as UIImage?
+
+    @IBAction func ExpandButtonClicked(sender: AnyObject) {
+        
+        if(!isExpand){
+            self.tableWidthConstraint.constant = 0
+            isExpand = true
+            self.expandButton.setImage(image_collapse, forState: UIControlState.Normal)
+        }
+        else
+        {
+            self.tableWidthConstraint.constant = 300
+            isExpand = false
+            self.expandButton.setImage(image_expand, forState: UIControlState.Normal)
+        }
+    }
+    
+    @IBOutlet weak var tableWidthConstraint : NSLayoutConstraint!
+   // @IBOutlet weak var fileView: SpringView!
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
         self.navigationController?.navigationBarHidden = false
         
-        addGradientBackgroundLayer()
+        self.progressVIew1.hidden = true
+        self.progressLabel.hidden = true
         
-        self.progressView.hidden = true
+        self.webView.hidden = true
+        self.expandButton.hidden = true
         
         
         //hide back button
         if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
         {
-            self.navigationItem.hidesBackButton = true
-            
-            //syncFolder()
-            
-            
+            addLeftNavItemOnView ()
         }
         else
         {
@@ -71,7 +101,36 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         initData()
+        
 
+    }
+    
+    func addLeftNavItemOnView ()
+    {
+        
+        // hide default navigation bar button item
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.hidesBackButton = true;
+        
+        
+        let buttonBack: UIButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        buttonBack.frame = CGRectMake(0, 0, 40, 40)
+        buttonBack.setImage(UIImage(named:"logout"), forState: UIControlState.Normal)
+        
+        buttonBack.addTarget(self, action: "logoutButtonClick:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        var leftBarButtonItem: UIBarButtonItem = UIBarButtonItem(customView: buttonBack)
+        
+        self.navigationItem.setLeftBarButtonItem(leftBarButtonItem, animated: false)
+        
+        
+    }
+    
+    func logoutButtonClick(sender:UIButton!)
+    {
+        let loginViewController = self.storyboard!.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+        
+        self.navigationController!.pushViewController(loginViewController, animated: true)
     }
     
     func initData(){
@@ -117,9 +176,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func syncFolder(){
         
         self.view.showLoading()
-        
-        //tableView1.hidden = true
-        
+
         self.reset()
         
         //Get Local Folder Structure
@@ -147,21 +204,22 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.compareFolder()
                 
                 if(self.updateFileList.count > 0 ){
+                    
+
+                    
                     self.downloadFiles()
                 }
                 else
                 {
+                    self.progressVIew1.hidden = true
+                    self.progressLabel.hidden = true
+                    
                     self.view.hideLoading()
-                    //self.tableView1.hidden = false
                     self.initData()
                 }
                 
 
             }
-//            else
-//            {
-//
-//            }
         }
     }
     
@@ -344,9 +402,12 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func downloadFiles(){
         
+        self.progressVIew1.hidden = false
+        self.progressLabel.hidden = false
+        
         //Download new files
         for localFile in self.updateFileList{
-                getFile(localFile.FilePath+"\\"+localFile.FileName, filePathReturn: rootPath.stringByAppendingPathComponent(localFile.LocalFilePath))
+            getFile(localFile.FilePath+"\\"+localFile.FileName, filePathReturn: rootPath.stringByAppendingPathComponent(localFile.LocalFilePath), fileName : localFile.FileName)
         }
 
     }
@@ -390,7 +451,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             //NSFileManager.defaultManager().fileExistsAtPath(path, isDirectory: &isdir)
         
-
         
             cell.lbl_Title.text = fileName
             
@@ -422,7 +482,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         if self.fileIsDirectory(file)
         {
-            
             let mainviewController = self.storyboard!.instantiateViewControllerWithIdentifier("MainViewController") as! MainViewController
             
             mainviewController.path = path
@@ -431,22 +490,36 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         else
         {
-//            var mcvc: MFMailComposeViewController = MFMailComposeViewController()
-//            mcvc.setSubject(file)
-//            mcvc.setMessageBody("File '\(file)' from iOS File Browser is attached", isHTML: false)
-//            mcvc.mailComposeDelegate = self
-//            var ext: String = file.pathExtension()
-//            var data: NSData = NSData.dataWithContentsOfFile(path)
-//            mcvc.addAttachmentData(data, mimeType: ext, fileName: file)
-//            self.presentModalViewController(mcvc, animated: true)
+            self.view.showLoading()
+
+            self.expandButton.hidden = false
+            
+            self.webView.hidden = false
+            
+            var url =  NSURL(fileURLWithPath: path)
+            
+            let request = NSURLRequest(URL: url!)
+            
+            self.webView.loadRequest(request)
+            
+            self.webView.delegate = self
+            
+            self.webView.scrollView.delegate = self
+            
+            self.title = file
+            
+            self.view.hideLoading()
+            
         }
     }
 
     @IBAction func ButtonRefeshClicked(sender: AnyObject) {
         self.syncFolder()
+        self.webView.hidden = true
+        self.expandButton.hidden = true
     }
     
-    func getFile(filePath : String , filePathReturn : String){
+    func getFile(filePath : String , filePathReturn : String , fileName : String){
         
         //println(filePathReturn)
         
@@ -454,6 +527,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let urlString = baseURL + "/Api/GetFile/?filePath=" + filePath
         
+
         var urlStr : NSString = urlString.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
         
         //var remoteUrl : NSURL? = NSURL(string: urlStr as String)
@@ -472,7 +546,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             return temporaryURL
         }
         
-        self.progressView.hidden = false
+        //self.progressView.hidden = false
         
         Alamofire.download(.GET, urlStr.description, destination)
             .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
@@ -486,13 +560,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 dispatch_async(dispatch_get_main_queue()) {
                     
                     let progress = Float(totalBytesRead) / Float(totalBytesExpectedToRead)
-                    self.progressView.animateProgressViewToProgress(progress)
-                    self.progressView.updateProgressViewLabelWithProgress(progress * 100)
-                    self.progressView.updateProgressViewWith(Float(totalBytesRead), totalFileSize: Float(totalBytesExpectedToRead))
+
+                    self.progressVIew1.progress = progress
+                    self.progressLabel.text =  fileName
 
                     if totalBytesRead == totalBytesExpectedToRead {
                         
-                        self.progressView.hidden = true
+                        //self.progressView.hidden = true
                         
                         self.numberOfFileDownloaded = self.numberOfFileDownloaded + 1
                         
@@ -505,9 +579,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 //Da download xong
                 if(self.numberOfFileDownloaded == self.updateFileList.count)
                 {
-                    //self.view.hideLoading()
+                    self.progressVIew1.hidden = true
+                    self.progressLabel.hidden = true
                     
-                    //self.tableView1.hidden = false
                     println("Da download xong")
                     
                     self.view.hideLoading()
@@ -518,17 +592,17 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-    func addGradientBackgroundLayer() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = view.frame
-        
-        let colorTop: AnyObject = UIColor(red: 73.0/255.0, green: 223.0/255.0, blue: 185.0/255.0, alpha: 1.0).CGColor
-        let colorBottom: AnyObject = UIColor(red: 36.0/255.0, green: 115.0/255.0, blue: 192.0/255.0, alpha: 1.0).CGColor
-        gradientLayer.colors = [colorTop, colorBottom]
-        
-        gradientLayer.locations = [0.0, 1.0]
-        view.layer.insertSublayer(gradientLayer, atIndex: 0)
-    }
+//    func addGradientBackgroundLayer() {
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.frame = view.frame
+//        
+//        let colorTop: AnyObject = UIColor(red: 73.0/255.0, green: 223.0/255.0, blue: 185.0/255.0, alpha: 1.0).CGColor
+//        let colorBottom: AnyObject = UIColor(red: 36.0/255.0, green: 115.0/255.0, blue: 192.0/255.0, alpha: 1.0).CGColor
+//        gradientLayer.colors = [colorTop, colorBottom]
+//        
+//        gradientLayer.locations = [0.0, 1.0]
+//        view.layer.insertSublayer(gradientLayer, atIndex: 0)
+//    }
 
     
 

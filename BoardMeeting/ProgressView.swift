@@ -31,13 +31,14 @@ class ProgressView: UIView {
     
     private func setupView() {
         backgroundColor = UIColor.clearColor()
-        createProgressLayer()
+        //createProgressLayer()
         createLabel()
     }
     
     func createLabel() {
+        
         progressLabel = UILabel()
-        progressLabel.textColor = .whiteColor()
+        progressLabel.textColor = UIColor.blackColor()
         progressLabel.textAlignment = .Center
         progressLabel.text = "0 %"
         progressLabel.font = UIFont(name: "HelveticaNeue-UltraLight", size: 40.0)
@@ -49,7 +50,7 @@ class ProgressView: UIView {
         
         // label to show the already downloaded size and the total size of the file
         sizeProgressLabel = UILabel()
-        sizeProgressLabel.textColor = .whiteColor()
+        sizeProgressLabel.textColor = .blackColor()
         sizeProgressLabel.textAlignment = .Center
         sizeProgressLabel.text = "0.0 MB / 0.0 MB"
         sizeProgressLabel.font = UIFont(name: "HelveticaNeue-Light", size: 10.0)
@@ -63,19 +64,23 @@ class ProgressView: UIView {
     private func createProgressLayer() {
         let startAngle = CGFloat(M_PI_2)
         let endAngle = CGFloat(M_PI * 2 + M_PI_2)
+        
+        
         let centerPoint = CGPointMake(CGRectGetWidth(frame)/2 , CGRectGetHeight(frame)/2)
+        println(centerPoint)
+        
         
         progressLayer.path = UIBezierPath(arcCenter:centerPoint, radius: CGRectGetWidth(frame)/2 - 10.0, startAngle:startAngle, endAngle:endAngle, clockwise: true).CGPath
         progressLayer.backgroundColor = UIColor.clearColor().CGColor
         progressLayer.fillColor = nil
-        progressLayer.strokeColor = UIColor.whiteColor().CGColor
+        progressLayer.strokeColor = UIColor.blackColor().CGColor
         progressLayer.lineWidth = 4.0
         progressLayer.strokeStart = 0.0
         progressLayer.strokeEnd = 0.0
         layer.addSublayer(progressLayer)
         
         var dashedLayer = CAShapeLayer()
-        dashedLayer.strokeColor = UIColor(white: 1.0, alpha: 0.5).CGColor
+        dashedLayer.strokeColor = UIColor.blackColor().CGColor
         dashedLayer.fillColor = nil
         dashedLayer.lineDashPattern = [2, 4]
         dashedLayer.lineJoin = "round"
@@ -85,13 +90,13 @@ class ProgressView: UIView {
     }
     
     func animateProgressViewToProgress(progress: Float) {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.fromValue = CGFloat(progressLayer.strokeEnd)
-        animation.toValue = CGFloat(progress)
-        animation.duration = 0.2
-        animation.fillMode = kCAFillModeForwards
-        progressLayer.strokeEnd = CGFloat(progress)
-        progressLayer.addAnimation(animation, forKey: "animation")
+//        let animation = CABasicAnimation(keyPath: "strokeEnd")
+//        animation.fromValue = CGFloat(progressLayer.strokeEnd)
+//        animation.toValue = CGFloat(progress)
+//        animation.duration = 0.2
+//        animation.fillMode = kCAFillModeForwards
+//        progressLayer.strokeEnd = CGFloat(progress)
+//        progressLayer.addAnimation(animation, forKey: "animation")
     }
     
     func updateProgressViewLabelWithProgress(percent: Float) {

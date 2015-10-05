@@ -10,30 +10,39 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Copyright (c) 2015 Synotive. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
-                    <rect key="frame" x="20" y="439" width="441" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="net-RV-uBb">
-                    <rect key="frame" x="65" y="116" width="351" height="248"/>
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="splash" translatesAutoresizingMaskIntoConstraints="NO" id="TW2-7F-hkd">
+                    <rect key="frame" x="-294" y="47" width="766" height="589"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="net-RV-uBb" secondAttribute="centerX" id="64L-aa-Tqa"/>
-                <constraint firstAttribute="centerY" secondItem="net-RV-uBb" secondAttribute="centerY" id="Db9-ln-9tf"/>
-                <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="Kzo-t9-V3l"/>
-                <constraint firstItem="8ie-xW-0ye" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="MfP-vx-nX0"/>
-                <constraint firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="ZEH-qu-HZ9"/>
+                <constraint firstItem="TW2-7F-hkd" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="30V-EF-rXE"/>
+                <constraint firstAttribute="trailing" secondItem="TW2-7F-hkd" secondAttribute="trailing" constant="8" id="FnH-K9-i8V"/>
+                <constraint firstItem="TW2-7F-hkd" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="IJl-1r-Y4G"/>
+                <constraint firstAttribute="bottom" secondItem="TW2-7F-hkd" secondAttribute="bottom" constant="8" id="YYE-WA-qi4"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="30V-EF-rXE"/>
+                    <exclude reference="FnH-K9-i8V"/>
+                    <exclude reference="IJl-1r-Y4G"/>
+                    <exclude reference="YYE-WA-qi4"/>
+                </mask>
+            </variation>
+            <variation key="heightClass=regular-widthClass=regular">
+                <mask key="constraints">
+                    <include reference="30V-EF-rXE"/>
+                    <include reference="FnH-K9-i8V"/>
+                    <include reference="IJl-1r-Y4G"/>
+                    <include reference="YYE-WA-qi4"/>
+                </mask>
+            </variation>
             <point key="canvasLocation" x="548" y="455"/>
         </view>
     </objects>
     <resources>
-        <image name="logo" width="351" height="248"/>
+        <image name="splash" width="1024" height="800"/>
     </resources>
 </document>

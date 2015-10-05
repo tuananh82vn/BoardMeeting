@@ -35,6 +35,7 @@
 		6689BC321BBA1F15004E569E /* Spring.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6689BC271BBA1D53004E569E /* Spring.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		66ABAEDB1BBD0D5100DBE3FB /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ABAEDA1BBD0D5100DBE3FB /* ProgressView.swift */; };
 		66ABAEDD1BBD0D5800DBE3FB /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */; };
+		66F3EDEC1BC20646003497C9 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F3EDEB1BC20646003497C9 /* WebViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +166,7 @@
 		6689BC1B1BBA1D53004E569E /* SpringApp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SpringApp.xcodeproj; path = Spring/SpringApp.xcodeproj; sourceTree = "<group>"; };
 		66ABAEDA1BBD0D5100DBE3FB /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadButton.swift; sourceTree = "<group>"; };
+		66F3EDEB1BC20646003497C9 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,6 +267,7 @@
 		6689BBBC1BBA118D004E569E /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				66F3EDEB1BC20646003497C9 /* WebViewController.swift */,
 				6689BB961BBA0E9E004E569E /* LoginViewController.swift */,
 				660A5B8E1BBA4D5B00F1F06D /* MainViewController.swift */,
 			);
@@ -552,6 +555,7 @@
 				6689BB971BBA0E9E004E569E /* LoginViewController.swift in Sources */,
 				6689BC081BBA18FF004E569E /* Serializable.swift in Sources */,
 				6689BC0C1BBA194F004E569E /* WebApiService.swift in Sources */,
+				66F3EDEC1BC20646003497C9 /* WebViewController.swift in Sources */,
 				660A5B8F1BBA4D5B00F1F06D /* MainViewController.swift in Sources */,
 				66ABAEDD1BBD0D5800DBE3FB /* DownloadButton.swift in Sources */,
 				6689BC141BBA1A78004E569E /* LocalStore.swift in Sources */,
