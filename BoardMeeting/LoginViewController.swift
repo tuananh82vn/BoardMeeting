@@ -24,9 +24,9 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
     
     var BMAFolderPath : String = ""
     
-    var rootPath : String = NSTemporaryDirectory().stringByAppendingPathComponent("Board Meeting Files")
+    var rootPath : String = NSTemporaryDirectory().stringByAppendingPathComponent("Home")
     
-    let RootFolderName = "Board Meeting Files"
+    let RootFolderName = "Home"
     
     var domain = "http://wsandypham:12345"
     

@@ -42,11 +42,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var BMAFolderPath : String = ""
     
-    let RootFolderName = "Board Meeting Files"
+    let RootFolderName = "Home"
     
     var rootPath : String = NSTemporaryDirectory()
 
-    var path  : String = NSTemporaryDirectory().stringByAppendingPathComponent("Board Meeting Files")
+    var path  : String = NSTemporaryDirectory().stringByAppendingPathComponent("Home")
 
     var numberOfFileDownloaded = 0
     
@@ -250,6 +250,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func syncFolder(){
         
+        
         self.view.showLoading()
 
         self.reset()
@@ -279,6 +280,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.compareFolder()
                 
                 if(self.updateFileList.count > 0 ){
+                
+                    //println("Need download total : \(self.updateFileList.count)")
                     
                     self.downloadFiles()
                 }
@@ -670,15 +673,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
                     if totalBytesRead == totalBytesExpectedToRead {
                         
-                        //self.progressView.hidden = true
-                        
-                        self.numberOfFileDownloaded = self.numberOfFileDownloaded + 1
-                        
                     }
-                    //print("Total bytes read on main queue: \(totalBytesRead)")
                 }
             }
             .response { response in
+                
+                self.numberOfFileDownloaded = self.numberOfFileDownloaded + 1
+                
+                //println("Done")
                 
                 //Da download xong
                 if(self.numberOfFileDownloaded == self.updateFileList.count)
@@ -686,7 +688,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.progressVIew1.hidden = true
                     self.progressLabel.hidden = true
                     
-                    println("Da download xong")
+                    //println("Da download xong")
                     
                     self.view.hideLoading()
                     
