@@ -97,6 +97,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.expandButton.hidden = true
         self.ButtonOpenIn.hidden = true
         
+        //println(path)
         
         //hide back button
         if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
@@ -106,8 +107,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         else
         {
             self.navigationItem.hidesBackButton = false
-            
-            
         }
         
         initData()
@@ -120,36 +119,41 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         searchActive = true;
+        self.tableView1.reloadData()
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
         searchActive = false;
+        self.tableView1.reloadData()
     }
     
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchActive = false;
+        self.tableView1.reloadData()
     }
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         searchActive = false;
+        self.tableView1.reloadData()
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+
+            filtered = self.files.filter({ (text) -> Bool in
+                let tmp: NSString = text
+                let range = tmp.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch)
+                return range.location != NSNotFound
+            })
         
-        filtered = self.files.filter({ (text) -> Bool in
-            let tmp: NSString = text
-            let range = tmp.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch)
-            return range.location != NSNotFound
-        })
+            if(filtered.count == 0){
+                searchActive = false;
+            }
+            else {
+                searchActive = true;
+            }
         
-        if(filtered.count == 0){
-            searchActive = false;
-        }
-        else {
-            searchActive = true;
-        }
-        
-        self.tableView1.reloadData()
+            self.tableView1.reloadData()
+
     }
     
     @IBAction func ExpandButtonClicked(sender: AnyObject) {
@@ -216,6 +220,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.files = fileManager.contentsOfDirectoryAtPath(path, error: &error) as! [String]
         
+        self.filtered = self.files
+        
+        
+        
         var index1 = 0
         
         for file in files {
@@ -223,6 +231,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             if (file == ".DS_Store")
             {
                files.removeAtIndex(index1)
+               filtered.removeAtIndex(index1)
             }
             index1++
         }
@@ -281,7 +290,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if(self.updateFileList.count > 0 ){
                 
-                    //println("Need download total : \(self.updateFileList.count)")
+                    println("Need download total : \(self.updateFileList.count)")
                     
                     self.downloadFiles()
                 }
@@ -524,7 +533,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
             var cell = self.tableView1.dequeueReusableCellWithIdentifier(CellIdentifier) as! MainTableViewCell
         
-        
             var fileName = ""
         
             if(searchActive)
@@ -535,7 +543,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             {
                 fileName = self.files[indexPath.row]
             }
-        
         
             
             self.selectedFileName = self.pathForFile(fileName)
@@ -581,7 +588,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        var file = self.files[indexPath.row]
+        var file = ""
+        
+        if(searchActive)
+        {
+            file = filtered[indexPath.row]
+        }
+        else
+        {
+            file = self.files[indexPath.row]
+        }
         
         var path = self.pathForFile(file)
         
@@ -721,23 +737,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         return bool_
     }
     
-
-    
-//    func addGradientBackgroundLayer() {
-//        
-//        let gradientLayer = CAGradientLayer()
-//        gradientLayer.frame = view.frame
-//        
-//        let colorTop: AnyObject = UIColor(red: 73.0/255.0, green: 223.0/255.0, blue: 185.0/255.0, alpha: 1.0).CGColor
-//        let colorBottom: AnyObject = UIColor(red: 36.0/255.0, green: 115.0/255.0, blue: 192.0/255.0, alpha: 1.0).CGColor
-//        gradientLayer.colors = [colorTop, colorBottom]
-//        
-//        gradientLayer.locations = [0.0, 1.0]
-//        
-//        view.layer.insertSublayer(gradientLayer, atIndex: 0)
-//        
-//        
-//    }
 
     
 
