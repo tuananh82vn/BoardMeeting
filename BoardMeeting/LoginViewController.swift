@@ -9,9 +9,11 @@
 import UIKit
 import Spring
 
+var keychain = Keychain()
 
 class LoginViewController: UIViewController , UITextFieldDelegate {
 
+    @IBOutlet weak var cb_RememberMe: UISwitch!
     @IBOutlet weak var password_img: SpringImageView!
     @IBOutlet weak var email_img: SpringImageView!
     
@@ -26,6 +28,8 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
     
     let RootFolderName = "Board Meeting Files"
     
+    var domain = "http://wsandypham:12345"
+    
     
     @IBOutlet weak var heightConstraint : NSLayoutConstraint!
     
@@ -34,8 +38,6 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
         super.viewDidLoad()
         
         self.navigationController?.navigationBarHidden = true
-        
-        var domain = "http://wsandypham:12345"
         
         LocalStore.setDomain(domain);
         
@@ -55,6 +57,17 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
 
         }
         
+        tft_Username.text = keychain["username"]
+        tft_Password.text = keychain["password"]
+        
+        if (tft_Password.text != "" &&  tft_Username.text != ""){
+            cb_RememberMe.on = true
+        }
+        else
+        {
+            cb_RememberMe.on = false
+        }
+
         tft_Password.delegate = self
         tft_Username.delegate = self
         
@@ -64,6 +77,15 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
         
         //rotated()
 
+    }
+    
+    
+    @IBAction func ButtonForgotClicked(sender: AnyObject) {
+        
+        let url = domain + "/Login/Forgot"
+        
+        openUrl(url)
+        
     }
     
     
@@ -107,12 +129,36 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
         password_img.image = UIImage(named: "password_normal")
     }
     
+    func textFieldShouldReturn(textField: UITextField!) -> Bool {   //delegate method
+        
+        if (textField.returnKeyType == UIReturnKeyType.Next)
+        {
+            tft_Password.becomeFirstResponder()
+        }
+        
+        if (textField.returnKeyType == UIReturnKeyType.Go)
+        {
+            DoLogin()
+        }
+        return true
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
-    @IBAction func ButtonLoginClicked(sender: AnyObject) {
-        //Check Internet
+    
+    func DoLogin()
+    {
+        
+        if(self.cb_RememberMe.on){
+            keychain["username"] = self.tft_Username.text
+            keychain["password"] = self.tft_Password.text
+        }
+        else
+        {
+            keychain["username"] = ""
+            keychain["password"] = ""
+        }
         
         self.view.showLoading();
         
@@ -134,9 +180,9 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
                                     
                                     if let temp = object {
                                         
-                                            LocalStore.setToken(temp.Password)
+                                        LocalStore.setToken(temp.Password)
                                         
-                                            self.performSegueWithIdentifier("GoToMain", sender: self)
+                                        self.performSegueWithIdentifier("GoToMain", sender: self)
                                         
                                     }
                                     else
@@ -169,7 +215,19 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
                     alertview.setTextTheme(.Light)
                 }
         })
+    }
 
+    @IBAction func ButtonLoginClicked(sender: AnyObject) {
+    
+            self.DoLogin()
+        
+
+    }
+    
+    func openUrl(url:String!) {
+        let targetURL = NSURL(string: url)
+        let application = UIApplication.sharedApplication()
+        application.openURL(targetURL!)
     }
     
 //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

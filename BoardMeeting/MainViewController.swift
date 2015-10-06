@@ -10,10 +10,15 @@ import UIKit
 import Alamofire
 import Spring
 
-class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, UIScrollViewDelegate{
+class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, UIScrollViewDelegate , UISearchBarDelegate , UIDocumentInteractionControllerDelegate {
 
+    @IBOutlet weak var ButtonOpenIn: SpringButton!
+    
+    @IBOutlet weak var line: UIImageView!
+    
     @IBOutlet weak var progressVIew1: UIProgressView!
     
+    @IBOutlet weak var searchBar: UISearchBar!
     
     @IBOutlet weak var expandButton: SpringButton!
     
@@ -57,27 +62,31 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     let image_collapse = UIImage(named: "collapse") as UIImage?
 
-    @IBAction func ExpandButtonClicked(sender: AnyObject) {
-        
-        if(!isExpand){
-            self.tableWidthConstraint.constant = 0
-            isExpand = true
-            self.expandButton.setImage(image_collapse, forState: UIControlState.Normal)
-        }
-        else
-        {
-            self.tableWidthConstraint.constant = 300
-            isExpand = false
-            self.expandButton.setImage(image_expand, forState: UIControlState.Normal)
-        }
-    }
+    let image_folder = UIImage(named: "folder") as UIImage?
     
+    let image_unknown = UIImage(named: "unknown") as UIImage?
+
+    var extensionFile:[String] = ["ppt","mp3","csv","png","pdf","xls","doc","txt","zip","docx","xlsx","pptx"]
+    
+    var searchActive : Bool = false
+    
+    var filtered:[String] = []
+    
+    var selectedFileName = ""
+    
+    var selectedExtname = ""
+    
+    var document_controller = UIDocumentInteractionController()
+    
+
     @IBOutlet weak var tableWidthConstraint : NSLayoutConstraint!
    // @IBOutlet weak var fileView: SpringView!
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        //addGradientBackgroundLayer()
         
         self.navigationController?.navigationBarHidden = false
         
@@ -86,12 +95,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.webView.hidden = true
         self.expandButton.hidden = true
+        self.ButtonOpenIn.hidden = true
         
         
         //hide back button
         if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
         {
-            addLeftNavItemOnView ()
+            addLeftNavItemOnView()
         }
         else
         {
@@ -102,7 +112,63 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         initData()
         
-
+        document_controller.delegate = self
+        
+        
+        
+    }
+    
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchActive = true;
+    }
+    
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        filtered = self.files.filter({ (text) -> Bool in
+            let tmp: NSString = text
+            let range = tmp.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch)
+            return range.location != NSNotFound
+        })
+        
+        if(filtered.count == 0){
+            searchActive = false;
+        }
+        else {
+            searchActive = true;
+        }
+        
+        self.tableView1.reloadData()
+    }
+    
+    @IBAction func ExpandButtonClicked(sender: AnyObject) {
+        
+        if(!isExpand){
+            self.tableWidthConstraint.constant = 0
+            isExpand = true
+            self.expandButton.setImage(image_collapse, forState: UIControlState.Normal)
+            self.searchBar.hidden = true
+            self.line.hidden = true
+        }
+        else
+        {
+            self.searchBar.hidden = false
+            self.line.hidden = false
+            self.tableWidthConstraint.constant = 300
+            isExpand = false
+            self.expandButton.setImage(image_expand, forState: UIControlState.Normal)
+        }
     }
     
     func addLeftNavItemOnView ()
@@ -128,6 +194,15 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func logoutButtonClick(sender:UIButton!)
     {
+        
+        var alertview = JSSAlertView().show(self, title: "Confirm", text: "Do you want to sign out ?", buttonText: "Yes", cancelButtonText: "No", color: UIColorFromHex(0x2ecc71, alpha: 1))
+        alertview.setTextTheme(.Light)
+        alertview.addAction(yesSubmitCallBack)
+        
+
+    }
+    
+    func yesSubmitCallBack(){
         let loginViewController = self.storyboard!.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
         
         self.navigationController!.pushViewController(loginViewController, animated: true)
@@ -204,8 +279,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.compareFolder()
                 
                 if(self.updateFileList.count > 0 ){
-                    
-
                     
                     self.downloadFiles()
                 }
@@ -436,6 +509,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if(searchActive) {
+            return filtered.count
+        }
+        
         return self.files.count
     }
     
@@ -443,9 +521,21 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
             var cell = self.tableView1.dequeueReusableCellWithIdentifier(CellIdentifier) as! MainTableViewCell
         
-            var fileName = self.files[indexPath.row]
+        
+            var fileName = ""
+        
+            if(searchActive)
+            {
+                fileName = filtered[indexPath.row]
+            }
+            else
+            {
+                fileName = self.files[indexPath.row]
+            }
+        
+        
             
-            var path = self.pathForFile(fileName)
+            self.selectedFileName = self.pathForFile(fileName)
             
             var isdir = self.fileIsDirectory(fileName)
             
@@ -454,22 +544,34 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
             cell.lbl_Title.text = fileName
             
-            cell.lbl_Title.textColor = isdir ? UIColor.blueColor() : UIColor.darkTextColor()
+            //cell.lbl_Title.textColor = isdir ? UIColor.blueColor() : UIColor.darkTextColor()
             
             cell.accessoryType = isdir ? UITableViewCellAccessoryType.DisclosureIndicator  : UITableViewCellAccessoryType.None
 
-            
-            //var ext = fileName.pathExtension.lowercaseString
-            
-//        if ext.isEqualToString("png") || ext.isEqualToString("jpg") {
-//            var img: UIImage = UIImage.imageWithContentsOfFile(path)
-//            cell.imageView.contentMode = UIViewContentModeScaleAspectFit
-//            cell.imageView.image = img
-//        }
-//        else {
-//            cell.imageView.image = nil
-//        }
-            
+            if(isdir){
+                
+                cell.img_icon.contentMode = UIViewContentMode.ScaleAspectFit
+                cell.img_icon.image = self.image_folder
+            }
+            else
+            {
+        
+                var ext = fileName.pathExtension.lowercaseString
+                
+                cell.img_icon.contentMode = UIViewContentMode.ScaleAspectFit
+                
+                if contains(self.extensionFile, ext) {
+                    
+                    let image_icon1 = UIImage(named: ext) as UIImage?
+                    
+                    cell.img_icon.image = image_icon1
+                }
+                else
+                {
+                    cell.img_icon.image = self.image_unknown
+                }
+            }
+        
         return cell
         
     }
@@ -493,6 +595,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.view.showLoading()
 
             self.expandButton.hidden = false
+            
+            self.ButtonOpenIn.hidden = false
             
             self.webView.hidden = false
             
@@ -592,7 +696,33 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    @IBAction func event_openin(){
+        
+        var url_  =  NSURL(fileURLWithPath: self.selectedFileName)
+        
+        if let item = url_ {
+            
+            self.selectApp4Openin(item)
+        }
+    }
+    
+    func selectApp4Openin(aUrl : NSURL!) -> Bool{
+
+        self.document_controller.URL = aUrl
+        
+        var bool_ : Bool = false
+        
+        var rect_inView = self.ButtonOpenIn.frame
+        
+        bool_ = self.document_controller.presentOpenInMenuFromRect(rect_inView, inView: self.view, animated: true)
+        
+        return bool_
+    }
+    
+
+    
 //    func addGradientBackgroundLayer() {
+//        
 //        let gradientLayer = CAGradientLayer()
 //        gradientLayer.frame = view.frame
 //        
@@ -601,7 +731,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 //        gradientLayer.colors = [colorTop, colorBottom]
 //        
 //        gradientLayer.locations = [0.0, 1.0]
+//        
 //        view.layer.insertSublayer(gradientLayer, atIndex: 0)
+//        
+//        
 //    }
 
     

@@ -10,7 +10,11 @@ import UIKit
 
 class MainTableViewCell: UITableViewCell {
 
+
+    
     @IBOutlet weak var lbl_Title: UILabel!
+ 
+    @IBOutlet weak var img_icon: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

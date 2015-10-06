@@ -7,8 +7,9 @@ struct LocalStore {
     
     private static let accessTokenKey = "accessTokenKey"
     
-    private static let accessAuditActivityUrlIdKey = "accessAuditActivityUrlIdKey"
+    private static let accessUsernameKey = "accessUsernameKey"
     
+    private static let accessPasswordKey = "accessPasswordKey"
     
     
     private static let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -24,8 +25,13 @@ struct LocalStore {
         userDefaults.synchronize()
     }
     
-    static func setAuditActivityUrlId(AuditActivityUrlId: String) {
-        userDefaults.setObject(AuditActivityUrlId, forKey: accessAuditActivityUrlIdKey)
+    static func setUsername(Username: String) {
+        userDefaults.setObject(Username, forKey: accessUsernameKey)
+        userDefaults.synchronize()
+    }
+    
+    static func setPassword(Password: String) {
+        userDefaults.setObject(Password, forKey: accessPasswordKey)
         userDefaults.synchronize()
     }
 
@@ -40,8 +46,13 @@ struct LocalStore {
         userDefaults.synchronize()
     }
     
-    private static func deleteAuditActivityUrlId() {
-        userDefaults.removeObjectForKey(accessAuditActivityUrlIdKey)
+    private static func deleteUsername() {
+        userDefaults.removeObjectForKey(accessUsernameKey)
+        userDefaults.synchronize()
+    }
+    
+    private static func deletePassword() {
+        userDefaults.removeObjectForKey(accessPasswordKey)
         userDefaults.synchronize()
     }
     
@@ -54,8 +65,12 @@ struct LocalStore {
         return userDefaults.stringForKey(accessTokenKey)
     }
     
-    static func accessAuditActivityUrlId() -> String? {
-        return userDefaults.stringForKey(accessAuditActivityUrlIdKey)
+    static func accessUsername() -> String? {
+        return userDefaults.stringForKey(accessUsernameKey)
+    }
+    
+    static func accessPassword() -> String? {
+        return userDefaults.stringForKey(accessPasswordKey)
     }
 
 

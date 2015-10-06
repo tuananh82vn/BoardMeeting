@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6689BB8B1BBA0E9E004E569E"
-               BuildableName = "BoardMeeting.app"
+               BuildableName = "Board Papers.app"
                BlueprintName = "BoardMeeting"
                ReferencedContainer = "container:BoardMeeting.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6689BB8B1BBA0E9E004E569E"
-            BuildableName = "BoardMeeting.app"
+            BuildableName = "Board Papers.app"
             BlueprintName = "BoardMeeting"
             ReferencedContainer = "container:BoardMeeting.xcodeproj">
          </BuildableReference>
@@ -77,7 +77,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6689BB8B1BBA0E9E004E569E"
-            BuildableName = "BoardMeeting.app"
+            BuildableName = "Board Papers.app"
             BlueprintName = "BoardMeeting"
             ReferencedContainer = "container:BoardMeeting.xcodeproj">
          </BuildableReference>
@@ -96,7 +96,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6689BB8B1BBA0E9E004E569E"
-            BuildableName = "BoardMeeting.app"
+            BuildableName = "Board Papers.app"
             BlueprintName = "BoardMeeting"
             ReferencedContainer = "container:BoardMeeting.xcodeproj">
          </BuildableReference>
