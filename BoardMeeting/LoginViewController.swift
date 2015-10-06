@@ -199,17 +199,22 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
                         }
                         else
                         {
+                            self.view.hideLoading();
+                            
                             var customIcon = UIImage(named: "no-internet")
-                            var alertview = JSSAlertView().show(self, title: "Warning", text: "Disconnected", buttonText: "Try later", color: UIColorFromHex(0xe74c3c, alpha: 1), iconImage: customIcon)
+                            var alertview = JSSAlertView().show(self, title: "Warning", text: "No connections are available ", buttonText: "Try later", color: UIColorFromHex(0xe74c3c, alpha: 1), iconImage: customIcon)
                             alertview.setTextTheme(.Light)
                             
-                            self.view.hideLoading();
+                            
                         }
                         
                     }
                 }
                 else
                 {
+                    
+                    self.view.hideLoading();
+                    
                     var customIcon = UIImage(named: "no-internet")
                     var alertview = JSSAlertView().show(self, title: "Warning", text: "No connections are available ", buttonText: "Try later", color: UIColorFromHex(0xe74c3c, alpha: 1), iconImage: customIcon)
                     alertview.setTextTheme(.Light)

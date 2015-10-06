@@ -259,7 +259,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func syncFolder(){
         
-        
+        WebApiService.checkInternet(false, completionHandler:
+            {(internet:Bool) -> Void in
+                
+        if (internet)
+        {
         self.view.showLoading()
 
         self.reset()
@@ -267,11 +271,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         //Get Local Folder Structure
         self.localFolder = FolderModel()
         
-        self.localFolder.FolderName = RootFolderName
+        self.localFolder.FolderName = self.RootFolderName
         
-        BMAFolderPath = rootPath.stringByAppendingPathComponent(RootFolderName)
+        self.BMAFolderPath = self.rootPath.stringByAppendingPathComponent(self.RootFolderName)
         
-        self.localFolder = self.getLocalFolder(BMAFolderPath, folder : self.localFolder, parentFolder : self.localFolder.FolderName)
+        self.localFolder = self.getLocalFolder(self.BMAFolderPath, folder : self.localFolder, parentFolder : self.localFolder.FolderName)
         
         self.SortFolder2(self.localFolder)
         
@@ -290,7 +294,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if(self.updateFileList.count > 0 ){
                 
-                    println("Need download total : \(self.updateFileList.count)")
+                    //println("Need download total : \(self.updateFileList.count)")
                     
                     self.downloadFiles()
                 }
@@ -306,6 +310,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
             }
         }
+        }
+        else
+        {
+            self.view.hideLoading();
+            
+            var customIcon = UIImage(named: "no-internet")
+            var alertview = JSSAlertView().show(self, title: "Warning", text: "No connections are available ", buttonText: "Try later", color: UIColorFromHex(0xe74c3c, alpha: 1), iconImage: customIcon)
+            alertview.setTextTheme(.Light)
+        }
+    })
     }
     
     func SortFolder1 (folder: FolderModel) -> Void {
