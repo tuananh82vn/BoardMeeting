@@ -89,22 +89,22 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
     }
     
     
-    //handle when device rotate
-    func rotated(){
-        
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
-        {
-            self.heightConstraint.constant = 70
-        }
-        
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
-        {
-            self.heightConstraint.constant = 250
-        }
-        
-        self.view.layoutIfNeeded()
-        
-    }
+//handle when device rotate
+//    func rotated(){
+//        
+//        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+//        {
+//            self.heightConstraint.constant = 70
+//        }
+//        
+//        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+//        {
+//            self.heightConstraint.constant = 250
+//        }
+//        
+//        self.view.layoutIfNeeded()
+//        
+//    }
 
     func textFieldDidBeginEditing(textField: UITextField) {
         if textField == tft_Username {
@@ -223,10 +223,7 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
     }
 
     @IBAction func ButtonLoginClicked(sender: AnyObject) {
-    
             self.DoLogin()
-        
-
     }
     
     func openUrl(url:String!) {
@@ -234,14 +231,5 @@ class LoginViewController: UIViewController , UITextFieldDelegate {
         let application = UIApplication.sharedApplication()
         application.openURL(targetURL!)
     }
-    
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        if segue.identifier == "GoToMain" {
-//            let main = segue.destinationViewController as! MainViewController
-//            main.localFolderList = self.localFolderList
-//        }
-//    }
-
-
 }
 

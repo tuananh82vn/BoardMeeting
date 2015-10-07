@@ -37,6 +37,7 @@
 		66ABAEDD1BBD0D5800DBE3FB /* DownloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */; };
 		66F3EDF71BC347C4003497C9 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F3EDF61BC347C4003497C9 /* Keychain.swift */; };
 		66F3EE061BC39684003497C9 /* Openin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F3EE051BC39684003497C9 /* Openin.swift */; };
+		66F4C9691BC498DA00E8C4D2 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66F4C9681BC498DA00E8C4D2 /* QuickLook.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,7 @@
 		66ABAEDC1BBD0D5800DBE3FB /* DownloadButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadButton.swift; sourceTree = "<group>"; };
 		66F3EDF61BC347C4003497C9 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		66F3EE051BC39684003497C9 /* Openin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Openin.swift; sourceTree = "<group>"; };
+		66F4C9681BC498DA00E8C4D2 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66F4C9691BC498DA00E8C4D2 /* QuickLook.framework in Frameworks */,
 				6689BC0E1BBA19BB004E569E /* UIKit.framework in Frameworks */,
 				6689BC051BBA184A004E569E /* Foundation.framework in Frameworks */,
 				6689BC311BBA1F15004E569E /* Spring.framework in Frameworks */,
@@ -357,6 +360,7 @@
 		6689BC061BBA1856004E569E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66F4C9681BC498DA00E8C4D2 /* QuickLook.framework */,
 				6689BC0D1BBA19BB004E569E /* UIKit.framework */,
 				6689BC041BBA184A004E569E /* Foundation.framework */,
 			);

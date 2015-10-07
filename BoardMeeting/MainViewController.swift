@@ -26,6 +26,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     var files : [String] = []
     
+    var filesTemp : [String] = []
+    
     var CellIdentifier: String = "Cell"
     
     var remoteFoler = FolderModel()
@@ -207,6 +209,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func yesSubmitCallBack(){
+        
+        LocalStore.setToken("")
+        
         let loginViewController = self.storyboard!.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
         
         self.navigationController!.pushViewController(loginViewController, animated: true)
@@ -219,6 +224,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         fileManager = NSFileManager()
         
         self.files = fileManager.contentsOfDirectoryAtPath(path, error: &error) as! [String]
+
+        self.files.sort{ $0.localizedCaseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending }
         
         self.filtered = self.files
         
@@ -613,19 +620,22 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             file = self.files[indexPath.row]
         }
         
-        var path = self.pathForFile(file)
+        let SelectedPath = self.pathForFile(file)
+        
+        self.selectedFileName = self.pathForFile(file)
+        
         
         if self.fileIsDirectory(file)
         {
             let mainviewController = self.storyboard!.instantiateViewControllerWithIdentifier("MainViewController") as! MainViewController
             
-            mainviewController.path = path
+            mainviewController.path = SelectedPath
             
             self.navigationController!.pushViewController(mainviewController, animated: true)
         }
         else
         {
-            self.view.showLoading()
+            //self.view.showLoading()
 
             self.expandButton.hidden = false
             
@@ -633,7 +643,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             self.webView.hidden = false
             
-            var url =  NSURL(fileURLWithPath: path)
+            var url =  NSURL(fileURLWithPath: SelectedPath)
             
             let request = NSURLRequest(URL: url!)
             
@@ -645,7 +655,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             self.title = file
             
-            self.view.hideLoading()
+            //self.view.hideLoading()
             
         }
     }
@@ -732,21 +742,26 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         var url_  =  NSURL(fileURLWithPath: self.selectedFileName)
         
+        //var url_  = NSBundle.mainBundle().URLForResource(self.selectedFileName, withExtension:nil)
+        
         if let item = url_ {
             
             self.selectApp4Openin(item)
         }
     }
     
+    
+    
     func selectApp4Openin(aUrl : NSURL!) -> Bool{
 
+        
         self.document_controller.URL = aUrl
         
         var bool_ : Bool = false
         
         var rect_inView = self.ButtonOpenIn.frame
         
-        bool_ = self.document_controller.presentOpenInMenuFromRect(rect_inView, inView: self.view, animated: true)
+        bool_ = self.document_controller.presentOptionsMenuFromRect(rect_inView, inView: self.view, animated: true)
         
         return bool_
     }
