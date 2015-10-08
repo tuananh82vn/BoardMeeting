@@ -426,10 +426,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yKe-tj-QBS">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </webView>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="line" translatesAutoresizingMaskIntoConstraints="NO" id="kSP-eA-iu4">
                                 <rect key="frame" x="0.0" y="-30" width="30" height="30"/>
                                 <constraints>
@@ -688,6 +684,10 @@
                                     <outlet property="delegate" destination="kzQ-c6-4pr" id="WsX-fI-VPO"/>
                                 </connections>
                             </tableView>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yKe-tj-QBS">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -721,7 +721,6 @@
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="yKe-tj-QBS"/>
                                 <exclude reference="kSP-eA-iu4"/>
                                 <exclude reference="OIY-5R-ZAP"/>
                                 <exclude reference="iWD-iw-xa9"/>
@@ -729,6 +728,7 @@
                                 <exclude reference="0WQ-b4-Xah"/>
                                 <exclude reference="xbb-GS-h2E"/>
                                 <exclude reference="IjY-JP-Itl"/>
+                                <exclude reference="yKe-tj-QBS"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="7Oz-4H-mER"/>
@@ -756,7 +756,6 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="subviews">
-                                <include reference="yKe-tj-QBS"/>
                                 <include reference="kSP-eA-iu4"/>
                                 <include reference="OIY-5R-ZAP"/>
                                 <include reference="iWD-iw-xa9"/>
@@ -764,6 +763,7 @@
                                 <include reference="0WQ-b4-Xah"/>
                                 <include reference="xbb-GS-h2E"/>
                                 <include reference="IjY-JP-Itl"/>
+                                <include reference="yKe-tj-QBS"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="7Oz-4H-mER"/>

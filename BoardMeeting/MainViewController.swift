@@ -80,6 +80,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var document_controller = UIDocumentInteractionController()
     
+    
 
     @IBOutlet weak var tableWidthConstraint : NSLayoutConstraint!
    // @IBOutlet weak var fileView: SpringView!
@@ -99,7 +100,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.expandButton.hidden = true
         self.ButtonOpenIn.hidden = true
         
-        //println(path)
+        println(path)
+        
+        println(NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
         
         //hide back button
         if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
@@ -116,9 +119,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         document_controller.delegate = self
         
         self.webView.scalesPageToFit = true
-        
-        
+
     }
+    
+
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         searchActive = true;
@@ -663,6 +667,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.syncFolder()
         self.webView.hidden = true
         self.expandButton.hidden = true
+        self.ButtonOpenIn.hidden = true
     }
     
     func getFile(filePath : String , filePathReturn : String , fileName : String){
