@@ -12,6 +12,7 @@ import Spring
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate, UIScrollViewDelegate , UISearchBarDelegate , UIDocumentInteractionControllerDelegate {
 
+    @IBOutlet weak var subView: UIView!
     @IBOutlet weak var ButtonOpenIn: SpringButton!
     
     @IBOutlet weak var line: UIImageView!
@@ -118,7 +119,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         document_controller.delegate = self
         
-        self.webView.scalesPageToFit = true
+        //self.webView.scalesPageToFit = true
 
     }
     
@@ -765,7 +766,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         var rect_inView = self.ButtonOpenIn.frame
         
-        bool_ = self.document_controller.presentOptionsMenuFromRect(rect_inView, inView: self.view, animated: true)
+        bool_ = self.document_controller.presentOptionsMenuFromRect(rect_inView, inView: self.subView, animated: true)
         
         return bool_
     }
