@@ -115,6 +115,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         document_controller.delegate = self
         
+        self.webView.scalesPageToFit = true
         
         
     }
@@ -204,8 +205,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         var alertview = JSSAlertView().show(self, title: "Confirm", text: "Do you want to sign out ?", buttonText: "Yes", cancelButtonText: "No", color: UIColorFromHex(0x2ecc71, alpha: 1))
         alertview.setTextTheme(.Light)
         alertview.addAction(yesSubmitCallBack)
-        
-
     }
     
     func yesSubmitCallBack(){
