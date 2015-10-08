@@ -100,9 +100,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.expandButton.hidden = true
         self.ButtonOpenIn.hidden = true
         
-        println(path)
+        //println(path)
         
-        println(NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
+        //println(NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
         
         //hide back button
         if(path == NSTemporaryDirectory().stringByAppendingPathComponent(RootFolderName))
